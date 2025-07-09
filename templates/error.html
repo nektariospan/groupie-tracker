@@ -1,0 +1,48 @@
+<!-- templates/error.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Error {{ .Code }}</title>
+  <link rel="icon" href="/static/img/favicon_err.ico" type="image/x-icon">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eef3f3;
+      font-family: monospace;
+    }
+    .error-box {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .error-code {
+      font-size: 3rem;
+      color: #c00;
+      margin-bottom: 1rem;
+    }
+    .error-message {
+      font-size: 1.2rem;
+      color: #333;
+    }
+    a {
+      display: block;
+      margin-top: 1.5rem;
+      text-decoration: none;
+      color: #0000009a;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-box">
+    <div class="error-code">{{ .Code }}</div>
+    <div class="error-message">{{ .Message }}</div>
+    <a href="/">← Back to homepage</a>
+  </div>
+</body>
+</html>

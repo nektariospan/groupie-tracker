@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Groupie Tracker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f8f8f8;
+        }
+        .artist-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #ccc;
+            margin: 10px;
+            padding: 15px;
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .artist-card img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .artist-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎸 Groupie Tracker</h1>
+    {{range .}}
+<div class="artist-card">
+    <a href="/artist/{{.ID}}">
+        <img src="{{.Image}}" alt="{{.Name}}">
+        <div class="artist-name">{{.Name}}</div>
+    </a>
+</div>
+{{end}}
+</body>
+</html>
