@@ -41,8 +41,17 @@ func router(w http.ResponseWriter, r *http.Request) {
 		homeHandler(w, r)
 	case strings.HasPrefix(r.URL.Path, "/artist/"):
 		artistHandler(w, r)
+	case r.URL.Path == "/team":
+		teamHandler(w, r)
+
 	default:
 		renderErrorPage(w, http.StatusNotFound, "Page not found")
+	}
+}
+func teamHandler(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "team.html", nil)
+	if err != nil {
+		renderErrorPage(w, http.StatusInternalServerError, "Team page template error")
 	}
 }
 
