@@ -48,7 +48,60 @@ func router(w http.ResponseWriter, r *http.Request) {
 
 // Render the homepage
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "index.html", allArtists)
+	total := len(allArtists)
+	limit := 10 // Default per page
+	page := 1   // Default page number
+
+	// Get ?limit
+	limitParam := r.URL.Query().Get("limit")
+	if limitParam != "" {
+		if parsed, err := strconv.Atoi(limitParam); err == nil && parsed > 0 {
+			limit = parsed
+		}
+	}
+
+	// Get ?page
+	pageParam := r.URL.Query().Get("page")
+	if pageParam != "" {
+		if parsed, err := strconv.Atoi(pageParam); err == nil && parsed > 0 {
+			page = parsed
+		}
+	}
+
+	// Compute slice boundaries
+	start := (page - 1) * limit
+	end := start + limit
+	if start >= total {
+		start = 0
+		end = limit
+		page = 1
+	}
+	if end > total {
+		end = total
+	}
+
+	// Prepare data
+	data := struct {
+		Artists      []models.FullArtistInfo
+		Limit        string
+		Page         int
+		Total        int
+		HasNext      bool
+		HasPrevious  bool
+		NextPage     int
+		PreviousPage int
+	}{
+		Artists:      allArtists[start:end],
+		Limit:        limitParam,
+		Page:         page,
+		Total:        total,
+		HasNext:      end < total,
+		HasPrevious:  start > 0,
+		NextPage:     page + 1,
+		PreviousPage: page - 1,
+	}
+
+	err := templates.ExecuteTemplate(w, "index.html", data)
 	if err != nil {
 		renderErrorPage(w, http.StatusInternalServerError, "Home page template error")
 	}

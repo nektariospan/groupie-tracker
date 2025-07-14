@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Groupie Tracker</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        .artist-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem;
-            width: 250px;
-            display: inline-block;
-            vertical-align: top;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .artist-card:hover {
-            transform: scale(1.05);
-        }
-        .artist-card img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-        .artist-name {
-            margin-top: 0.5rem;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #fff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Groupie Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🎸 Groupie Tracker</h1>
-        {{range .}}
-        <div class="artist-card">
-            <a href="/artist/{{.ID}}">
-                <img src="{{.Image}}" alt="{{.Name}}">
-                <div class="artist-name">{{.Name}}</div>
-            </a>
-        </div>
+  <div class="container">
+    <h1><a href="/">🎸 Groupie Tracker</a></h1>
+    <div class="pagination-controls">
+      Show:
+      <a href="/?limit=5&page=1" class="{{if eq .Limit "5"}}active{{end}}">5</a> |
+      <a href="/?limit=10&page=1" class="{{if or (eq .Limit "10") (and (ne .Limit "5") (ne .Limit "20"))}}active{{end}}">10</a> |
+      <a href="/?limit=20&page=1" class="{{if eq .Limit "20"}}active{{end}}">20</a> bands
+      <span style="margin-left:2rem;">
+        {{if .HasPrevious}}
+          <a href="/?limit={{.Limit}}&page={{.PreviousPage}}" class="nav-button prev-button">← Previous</a>
         {{end}}
+        {{if .HasNext}}
+          <a href="/?limit={{.Limit}}&page={{.NextPage}}" class="nav-button next-button">Next →</a>
+        {{end}}
+      </span>
     </div>
+    <div class="artist-grid">
+      {{range .Artists}}
+      <div class="artist-card">
+        <a href="/artist/{{.ID}}">
+          <img src="{{.Image}}" alt="{{.Name}}">
+          <div class="artist-name">{{.Name}}</div>
+        </a>
+      </div>
+      {{end}}
+    </div>
+  </div>
 </body>
 </html>
