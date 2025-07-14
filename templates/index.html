@@ -3,41 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Groupie Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
     <style>
-        body {
-            font-family: sans-serif;
-            background: #f8f8f8;
-        }
         .artist-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            box-shadow: 0 0 5px #ccc;
-            margin: 10px;
-            padding: 15px;
-            width: 300px;
+            padding: 1rem;
+            margin: 1rem;
+            width: 250px;
             display: inline-block;
             vertical-align: top;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .artist-card:hover {
+            transform: scale(1.05);
         }
         .artist-card img {
             max-width: 100%;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         .artist-name {
+            margin-top: 0.5rem;
             font-weight: bold;
-            font-size: 1.2em;
-            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <h1>🎸 Groupie Tracker</h1>
-    {{range .}}
-<div class="artist-card">
-    <a href="/artist/{{.ID}}">
-        <img src="{{.Image}}" alt="{{.Name}}">
-        <div class="artist-name">{{.Name}}</div>
-    </a>
-</div>
-{{end}}
+    <div class="container">
+        <h1>🎸 Groupie Tracker</h1>
+        {{range .}}
+        <div class="artist-card">
+            <a href="/artist/{{.ID}}">
+                <img src="{{.Image}}" alt="{{.Name}}">
+                <div class="artist-name">{{.Name}}</div>
+            </a>
+        </div>
+        {{end}}
+    </div>
 </body>
 </html>

@@ -3,36 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>{{.Name}}</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>{{.Name}}</h1>
-    <img src="{{.Image}}" alt="{{.Name}}" style="max-width:200px;"><br>
+    <div class="container">
+        <h1>{{.Name}}</h1>
+        <img src="{{.Image}}" alt="{{.Name}}" style="max-width:200px; border-radius:8px;"><br>
+        <p><strong>First album:</strong> {{.FirstAlbum}}</p>
+        <p><strong>Members:</strong></p>
+        <ul>
+            {{range .Members}}<li>{{.}}</li>{{end}}
+        </ul>
 
-    <p><strong>First album:</strong> {{.FirstAlbum}}</p>
-    <p><strong>Members:</strong></p>
-    <ul>
-        {{range .Members}}<li>{{.}}</li>{{end}}
-    </ul>
+        <h2>📍 Locations</h2>
+        <ul>
+            {{range .Locations}}<li>{{.}}</li>{{end}}
+        </ul>
 
-    <h2>📍 Locations</h2>
-    <ul>
-        {{range .Locations}}<li>{{.}}</li>{{end}}
-    </ul>
+        <h2>📅 Dates</h2>
+        <ul>
+            {{range .Dates}}<li>{{.}}</li>{{end}}
+        </ul>
 
-    <h2>📅 Dates</h2>
-    <ul>
-        {{range .Dates}}<li>{{.}}</li>{{end}}
-    </ul>
-
-    <h2>🧭 Relation: Location → Dates</h2>
-    {{range $loc, $dates := .Relation}}
+        <h2>🧭 Relation: Location → Dates</h2>
+        {{range $loc, $dates := .Relation}}
         <p><strong>{{$loc}}</strong>:
             <ul>
-            {{range $dates}}<li>{{.}}</li>{{end}}
+                {{range $dates}}<li>{{.}}</li>{{end}}
             </ul>
         </p>
-    {{end}}
+        {{end}}
 
-    <br><a href="/">← Back to artists</a>
+        <br><a href="/">← Back to artists</a>
+    </div>
 </body>
 </html>
