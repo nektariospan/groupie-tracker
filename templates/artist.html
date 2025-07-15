@@ -1,38 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{.Name}}</title>
+  <meta charset="UTF-8">
+  <title>{{.Name}}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
 </head>
 <body>
-    <h1>{{.Name}}</h1>
-    <img src="{{.Image}}" alt="{{.Name}}" style="max-width:200px;"><br>
+  <div class="container artist-detail">
+    <!-- Header section with image and title -->
+    <div class="artist-header">
+      <img src="{{.Image}}" alt="{{.Name}}" class="artist-image">
+      <h1 class="artist-title">{{.Name}}</h1>
+    </div>
 
-    <p><strong>First album:</strong> {{.FirstAlbum}}</p>
-    <p><strong>Members:</strong></p>
-    <ul>
-        {{range .Members}}<li>{{.}}</li>{{end}}
-    </ul>
+    <!-- First album -->
+    <section class="artist-info-section">
+      <h2>First Album</h2>
+      <p>{{.FirstAlbum}}</p>
+    </section>
 
-    <h2>📍 Locations</h2>
-    <ul>
-        {{range .Locations}}<li>{{.}}</li>{{end}}
-    </ul>
+    <!-- Member list -->
+    <section class="artist-info-section">
+      <h2>Members</h2>
+      <ul class="details-list">
+        {{range .Members}}
+          <li>{{.}}</li>
+        {{end}}
+      </ul>
+    </section>
 
-    <h2>📅 Dates</h2>
-    <ul>
-        {{range .Dates}}<li>{{.}}</li>{{end}}
-    </ul>
+    <!-- Locations -->
+    <section class="artist-info-section">
+      <h2>📍 Locations</h2>
+      <ul class="details-list">
+        {{range .Locations}}
+          <li>{{.}}</li>
+        {{end}}
+      </ul>
+    </section>
 
-    <h2>🧭 Relation: Location → Dates</h2>
-    {{range $loc, $dates := .Relation}}
-        <p><strong>{{$loc}}</strong>:
+    <!-- Dates -->
+    <section class="artist-info-section">
+      <h2>📅 Dates</h2>
+      <ul class="details-list">
+        {{range .Dates}}
+          <li>{{.}}</li>
+        {{end}}
+      </ul>
+    </section>
+
+    <!-- Relation mapping -->
+    <section class="artist-info-section">
+      <h2>🧭 Shows by Location → Dates</h2>
+      <div class="relation-list">
+        {{range $loc, $dates := .Relation}}
+          <div class="relation-item">
+            <h3>{{$loc}}</h3>
             <ul>
-            {{range $dates}}<li>{{.}}</li>{{end}}
+              {{range $dates}}
+                <li>{{.}}</li>
+              {{end}}
             </ul>
-        </p>
-    {{end}}
+          </div>
+        {{end}}
+      </div>
+    </section>
 
-    <br><a href="/">← Back to artists</a>
+    <!-- Back link -->
+    <div class="back-link">
+      <a href="/" class="nav-button">← Back to artists</a>
+    </div>
+  </div>
 </body>
 </html>

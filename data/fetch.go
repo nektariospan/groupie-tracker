@@ -7,10 +7,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
 )
 
 const baseURL = "https://groupietrackers.herokuapp.com/api"
 
+// fetchJSON performs an HTTP GET to the given URL and decodes the JSON response into target.
 func fetchJSON(url string, target interface{}) error {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -26,44 +28,97 @@ func fetchJSON(url string, target interface{}) error {
 	if err := json.Unmarshal(body, target); err != nil {
 		return fmt.Errorf("JSON decode error: %v", err)
 	}
-
 	return nil
 }
 
+// FetchFullArtistInfo fetches summary list and then, in parallel for each artist,
+// retrieves locations, dates and relations before returning the combined slice.
 func FetchFullArtistInfo() []models.FullArtistInfo {
+	// First, fetch the list of all artist summaries.
 	var artists []models.ArtistSummary
 	if err := fetchJSON(baseURL+"/artists", &artists); err != nil {
 		log.Fatal("Error fetching artists: ", err)
 	}
 
-	var fullData []models.FullArtistInfo
+	// Prepare synchronization primitives
+	var wg sync.WaitGroup
+	artistChan := make(chan models.FullArtistInfo, len(artists))
 
+	// Launch one goroutine per artist to fetch details concurrently
 	for _, artist := range artists {
-		var locations models.Locations
-		var dates models.Dates
-		var relation models.Relation
+		wg.Add(1)
 
-		if err := fetchJSON(artist.LocationsURL, &locations); err != nil {
-			log.Println("Error fetching locations for artist ID", artist.ID, ":", err)
-			continue
-		}
+		go func(artist models.ArtistSummary) {
+			defer wg.Done()
 
-		if err := fetchJSON(artist.DatesURL, &dates); err != nil {
-			log.Println("Error fetching dates for artist ID", artist.ID, ":", err)
-			continue
-		}
+			// Containers for each sub-request
+			var (
+				locations models.Locations
+				dates     models.Dates
+				relation  models.Relation
+			)
 
-		if err := fetchJSON(artist.RelationURL, &relation); err != nil {
-			log.Println("Error fetching relation for artist ID", artist.ID, ":", err)
-			continue
-		}
+			// innerWg waits for the three fetches
+			var innerWg sync.WaitGroup
+			errChan := make(chan error, 3) // buffered to hold up to 3 errors
 
-		fullData = append(fullData, models.FullArtistInfo{
-			ArtistSummary: artist,
-			Locations:     locations.Locations,
-			Dates:         dates.Dates,
-			Relation:      relation.DatesLocations,
-		})
+			// Fetch locations concurrently
+			innerWg.Add(1)
+			go func() {
+				defer innerWg.Done()
+				if err := fetchJSON(artist.LocationsURL, &locations); err != nil {
+					errChan <- fmt.Errorf("locations: %v", err)
+				}
+			}()
+
+			// Fetch dates concurrently
+			innerWg.Add(1)
+			go func() {
+				defer innerWg.Done()
+				if err := fetchJSON(artist.DatesURL, &dates); err != nil {
+					errChan <- fmt.Errorf("dates: %v", err)
+				}
+			}()
+
+			// Fetch relation concurrently
+			innerWg.Add(1)
+			go func() {
+				defer innerWg.Done()
+				if err := fetchJSON(artist.RelationURL, &relation); err != nil {
+					errChan <- fmt.Errorf("relation: %v", err)
+				}
+			}()
+
+			// Wait for all three to complete
+			innerWg.Wait()
+			close(errChan)
+
+			// If any fetch failed, log and skip this artist
+			for e := range errChan {
+				log.Println("Error fetching for artist ID", artist.ID, ":", e)
+				return
+			}
+
+			// All good: send the aggregated FullArtistInfo into the channel
+			artistChan <- models.FullArtistInfo{
+				ArtistSummary: artist,
+				Locations:     locations.Locations,
+				Dates:         dates.Dates,
+				Relation:      relation.DatesLocations,
+			}
+		}(artist)
+	}
+
+	// Close the channel once all artist goroutines have finished
+	go func() {
+		wg.Wait()
+		close(artistChan)
+	}()
+
+	// Collect results into a slice
+	var fullData []models.FullArtistInfo
+	for a := range artistChan {
+		fullData = append(fullData, a)
 	}
 
 	return fullData
