@@ -13,7 +13,7 @@ import (
 const baseURL = "https://groupietrackers.herokuapp.com/api"
 
 // fetchJSON performs an HTTP GET to the given URL and decodes the JSON response into target.
-func fetchJSON(url string, target interface{}) error {
+func fetchJSON(url string, target any) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("HTTP GET error: %v", err)
@@ -106,6 +106,7 @@ func FetchFullArtistInfo() []models.FullArtistInfo {
 				Dates:         dates.Dates,
 				Relation:      relation.DatesLocations,
 			}
+
 		}(artist)
 	}
 
