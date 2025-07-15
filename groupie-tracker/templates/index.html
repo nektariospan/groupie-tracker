@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Groupie Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+</head>
+<body>
+  <div class="container">
+    <!-- Main header with home link -->
+    <h1><a href="/">🎸 Groupie Tracker</a></h1>
+
+    <!-- Link to the team page -->
+    <div class="top-links">
+      <a href="/team" class="nav-button">Our Team</a>
+    </div>
+
+    <!-- Pagination controls: first row = limit selector, second row = prev/next -->
+    <div class="pagination-controls">
+      <div class="limit-controls">
+        Show:
+        <a href="/?limit=10&page=1" class='{{if eq .Limit "10"}}active{{end}}'>10</a> 
+        <a href="/?limit=20&page=1" class='{{if eq .Limit "20"}}active{{end}}'>20</a> 
+        <a href="/?limit=all&page=1" class='{{if eq .Limit "all"}}active{{end}}'>All</a> bands
+      </div>
+      <div class="page-nav">
+        {{if .HasPrevious}}
+          <a href="/?limit={{.Limit}}&page={{.PreviousPage}}" class="nav-button prev-button">← Previous</a>
+        {{end}}
+        {{if .HasNext}}
+          <a href="/?limit={{.Limit}}&page={{.NextPage}}" class="nav-button next-button">Next →</a>
+        {{end}}
+      </div>
+    </div>
+
+    <!-- Artist grid: up to 5 cards per row, auto-wrapping -->
+    <div class="artist-grid">
+      {{range .Artists}}
+      <div class="artist-card">
+        <!-- Wrap entire flip-card in a link so front and back both navigate -->
+        <a href="/artist/{{.ID}}" class="card-link">
+          <div class="card-inner">
+            <!-- Front face: image + name -->
+            <div class="card-front">
+              <img src="{{.Image}}" alt="{{.Name}}" loading="lazy">
+              <div class="artist-name">{{.Name}}</div>
+            </div>
+            <!-- Back face: member list -->
+            <div class="card-back">
+              <div class="artist-info">
+                <h3>{{.Name}}</h3>
+                <p><strong>Members:</strong></p>
+                <ul>
+                  {{range .Members}}
+                    <li>{{.}}</li>
+                  {{end}}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</body>
+</html>
