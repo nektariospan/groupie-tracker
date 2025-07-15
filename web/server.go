@@ -24,26 +24,6 @@ type ErrorData struct {
 	Message string
 }
 
-// LoggingMiddleware logs each incoming request
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next.ServeHTTP(w, r)
-	})
-}
-
-// RecoveryMiddleware recovers from panics and returns a 500 page
-func RecoveryMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() {
-			if err := recover(); err != nil {
-				log.Printf("panic recovered: %v\n%s", err, debug.Stack())
-				renderErrorPage(w, http.StatusInternalServerError, "Internal Server Error")
-			}
-		}()
-		next.ServeHTTP(w, r)
-	})
-}
-
 // StartServer sets up routes, applies middleware, and starts the HTTP server
 func StartServer() {
 	// Fetch and cache all artist data
@@ -175,4 +155,24 @@ func renderErrorPage(w http.ResponseWriter, code int, message string) {
 	if err := errorTemplate.Execute(w, ErrorData{Code: code, Message: message}); err != nil {
 		http.Error(w, "Error rendering error page", http.StatusInternalServerError)
 	}
+}
+
+// LoggingMiddleware logs each incoming request
+func LoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next.ServeHTTP(w, r)
+	})
+}
+
+// RecoveryMiddleware recovers from panics and returns a 500 page
+func RecoveryMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("panic recovered: %v\n%s", err, debug.Stack())
+				renderErrorPage(w, http.StatusInternalServerError, "Internal Server Error")
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }
