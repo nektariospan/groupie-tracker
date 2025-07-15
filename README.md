@@ -36,7 +36,7 @@ groupie-tracker/
 ├── models/               # Data models
 ├── web/                  # HTTP server and routing
 │   ├── templates/        # HTML templates
-│   └── static/           # CSS, images, and assets
+├── static/           # CSS, images, and assets
 └── README.md             # Project documentation
 ```
 
