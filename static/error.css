@@ -1,6 +1,17 @@
 /* From Uiverse.io by LightAndy1 */ 
 /* Spotify music card made by: csozi | Website: www.csozi.hu*/
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+
 .card {
   position: relative;
   width: 260px;
@@ -18,9 +29,9 @@
 }
 
 .pfp {
-  position: relative;
+  /* position: relative;
   top: 5px;
-  left: 5px;
+  left: 5px; */
   height: 40px;
   width: 40px;
   background-color: #d2d2d2;
@@ -203,4 +214,11 @@
   100% {
     transform: scaleY(0.1);
   }
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
