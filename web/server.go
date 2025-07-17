@@ -13,7 +13,7 @@ import (
 
 // Templates
 var templates = template.Must(template.ParseGlob("templates/*.html"))
-var errorTemplate = template.Must(template.ParseFiles("templates/error.html"))
+var errorTemplate = template.Must(template.ParseFiles("templates/errors/error.html"))
 
 // Cached data
 var allArtists []models.FullArtistInfo
@@ -29,12 +29,19 @@ func StartServer() {
 	// Fetch and cache all artist data
 	allArtists = data.FetchFullArtistInfo()
 
-	// Register static file handler and central router
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/", http.HandlerFunc(router))
+	// Create a new ServeMux
+	mux := http.NewServeMux()
 
-	// Wrap the default mux with logging and recovery middleware
-	var handler http.Handler = http.DefaultServeMux
+	// Register static file handler
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// Register route handlers
+	mux.HandleFunc("/", homeHandler)
+	mux.HandleFunc("/team", teamHandler)
+	mux.HandleFunc("/artist/", artistHandler) // Dynamic handling inside function
+
+	// Wrap with middleware
+	var handler http.Handler = mux
 	handler = LoggingMiddleware(handler)
 	handler = RecoveryMiddleware(handler)
 
@@ -42,20 +49,7 @@ func StartServer() {
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
-// Central router for handling known and unknown routes
-func router(w http.ResponseWriter, r *http.Request) {
-	switch {
-	case r.URL.Path == "/":
-		homeHandler(w, r)
-	case strings.HasPrefix(r.URL.Path, "/artist/"):
-		artistHandler(w, r)
-	case r.URL.Path == "/team":
-		teamHandler(w, r)
-	default:
-		renderErrorPage(w, http.StatusNotFound, "Page not found")
-	}
-}
-
+// Team page
 func teamHandler(w http.ResponseWriter, _ *http.Request) {
 	if err := templates.ExecuteTemplate(w, "team.html", nil); err != nil {
 		renderErrorPage(w, http.StatusInternalServerError, "Team page template error")
@@ -151,15 +145,26 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
 
 // Renders error.html with given code and message
 func renderErrorPage(w http.ResponseWriter, code int, message string) {
+	// First and only WriteHeader call
 	w.WriteHeader(code)
-	if err := errorTemplate.Execute(w, ErrorData{Code: code, Message: message}); err != nil {
-		http.Error(w, "Error rendering error page", http.StatusInternalServerError)
+
+	err := errorTemplate.Execute(w, ErrorData{Code: code, Message: message})
+	if err != nil {
+		// Don't call WriteHeader again!
+		log.Printf("Error rendering error page template: %v", err)
+
+		// If the socket hasn't already closed, write a fallback message
+		_, writeErr := w.Write([]byte("An unexpected error occurred."))
+		if writeErr != nil {
+			log.Printf("Client disconnected (broken pipe): %v", writeErr)
+		}
 	}
 }
 
 // LoggingMiddleware logs each incoming request
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// log.Printf("➡ %s %s", r.Method, r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }
@@ -169,7 +174,7 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("panic recovered: %v\n%s", err, debug.Stack())
+				log.Printf("🔥 Panic recovered: %v\n%s", err, debug.Stack())
 				renderErrorPage(w, http.StatusInternalServerError, "Internal Server Error")
 			}
 		}()
