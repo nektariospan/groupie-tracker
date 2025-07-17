@@ -32,11 +32,23 @@
 
 ```
 groupie-tracker/
-├── data/                 # Data fetching logic
-├── models/               # Data models
-├── web/                  # HTTP server and routing
-│   ├── templates/        # HTML templates
-├── static/           # CSS, images, and assets
+├── data/                 # Contains fetch.go for API data fetching
+│   └── fetch.go
+├── models/               # Contains types.go with all data models (Artist, Location, etc.)
+│   └── types.go
+├── static/               # Static files (CSS, images, icons)
+│   ├── images/           # Artist images, team photos, favicon
+│   └── style.css         # Main stylesheet
+├── templates/            # HTML templates for pages and errors
+│   ├── errors/
+│   │   └── error.html
+│   ├── artist.html
+│   ├── index.html
+│   └── team.html
+├── web/                  # HTTP server, handlers, and middleware logic
+│   └── server.go
+├── go.mod                # Go module definition
+├── main.go               # Entry point, delegates to web/server
 └── README.md             # Project documentation
 ```
 
