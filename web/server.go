@@ -40,13 +40,8 @@ func StartServer() {
 	mux.HandleFunc("/team", teamHandler)
 	mux.HandleFunc("/artist/", artistHandler) // Dynamic handling inside function
 
-	// Wrap with middleware
-	var handler http.Handler = mux
-	handler = LoggingMiddleware(handler)
-	handler = RecoveryMiddleware(handler)
-
 	log.Println("🚀 Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	log.Fatal(http.ListenAndServe(":8080", RecoveryMiddleware(mux)))
 }
 
 // Team page
@@ -159,14 +154,6 @@ func renderErrorPage(w http.ResponseWriter, code int, message string) {
 			log.Printf("Client disconnected (broken pipe): %v", writeErr)
 		}
 	}
-}
-
-// LoggingMiddleware logs each incoming request
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// log.Printf("➡ %s %s", r.Method, r.URL.Path)
-		next.ServeHTTP(w, r)
-	})
 }
 
 // RecoveryMiddleware recovers from panics and returns a 500 page
