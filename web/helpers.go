@@ -21,19 +21,6 @@ type ErrorData struct {
 	Message string
 }
 
-func safeExecuteTemplate(w http.ResponseWriter, name string, data interface{}) {
-	var buf bytes.Buffer
-	if err := templates.ExecuteTemplate(&buf, name, data); err != nil {
-		renderErrorPage(w, http.StatusInternalServerError, name+" render error")
-		return
-	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	if _, err := buf.WriteTo(w); err != nil {
-		log.Printf("Client disconnected (broken pipe): %v", err)
-	}
-}
-
 // renderErrorPage writes the error template using a buffer to avoid
 // sending headers prematurely. Only one WriteHeader is called.
 func renderErrorPage(w http.ResponseWriter, code int, message string) {
