@@ -14,20 +14,26 @@ const baseURL = "https://groupietrackers.herokuapp.com/api"
 
 // fetchJSON performs an HTTP GET to the given URL and decodes the JSON response into target.
 func fetchJSON(url string, target any) error {
+	// Send HTTP GET request to the given URL
 	resp, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("HTTP GET error: %v", err)
 	}
+	// Ensure the response body is closed after reading
 	defer resp.Body.Close()
 
+	// Read the entire response body into a byte slice
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("Read error: %v", err)
 	}
 
+	// Decode the JSON response into the target variable
 	if err := json.Unmarshal(body, target); err != nil {
 		return fmt.Errorf("JSON decode error: %v", err)
 	}
+
+	// No errors occurred; return nil
 	return nil
 }
 
