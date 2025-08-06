@@ -1,0 +1,142 @@
+.artist-detail {
+  max-width: 800px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Header */
+.artist-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.artist-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.artist-title {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+/* Info sections */
+.artist-info-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+.artist-info-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Lists styling - horizontal then vertical wrap */
+.details-list,
+.relation-list,
+.relation-item ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.details-list li,
+.relation-item ul li {
+  margin: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-color);
+  border-radius: 4px;
+    font-size: 1.1rem;
+
+}
+
+/* Relation items */
+.relation-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.relation-item {
+  text-align: center;
+  margin: 1rem;
+  min-width: 200px;
+}
+
+.relation-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Media (YouTube) */
+.artist-media {
+  margin: 2rem 0;
+}
+
+.artist-media iframe {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 16/9;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Back-link button */
+.back-link {
+  margin: 2rem 0;
+}
+
+.back-link .nav-button {
+  padding: 0.5rem 1rem;
+  font-size: 1.4rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Paragraph styling */
+.artist-info-section p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  max-width: 800px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .artist-title {
+    font-size: 2rem;
+  }
+  
+  .artist-image {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .details-list,
+  .relation-list {
+    gap: 0.5rem;
+  }
+  
+  .details-list li,
+  .relation-item ul li {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}

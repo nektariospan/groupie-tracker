@@ -1,0 +1,131 @@
+/*----------------------------------------
+  CSS Variables
+----------------------------------------*/
+:root {
+    --primary: #fff;
+    --secondary: #ddd;
+    --social-links: #000000;
+
+    /* Artist card */
+    --card-w:   260px;
+    --card-h:   310px;
+    --img-size: 180px;
+
+    /* Team card (1.5x artist) */
+    --team-card-w:   450px;
+    --team-card-h:   525px;
+    --team-img-size: 300px;
+
+
+    --primary-color: #3264fe;
+    --secondary-color: #dadae5;
+    --text-color: #fff;
+    --bg-color: rgba(255, 255, 255, 0.05);
+}
+
+/*----------------------------------------
+  Reset & Base Styling
+----------------------------------------*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 90%;  
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: var(--primary);
+  background: url("/static/images/background.jpg") center/cover fixed;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+  z-index: -1;
+}
+
+/*----------------------------------------
+  Headings & Links
+----------------------------------------*/
+
+container {
+  max-width: 1400px; 
+}
+
+h1, h2 {
+  text-align: center;
+  margin-top: 0.5rem;
+  margin-left: 0.3rem;
+  font-size: 1.8rem;  
+}
+
+a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 0.5rem;
+}
+a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/*----------------------------------------
+  Layout Container & Top Links
+----------------------------------------*/
+.container {
+  position: relative;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.top-links {
+  position: absolute;
+  top: 1.5rem;         
+  right: 1rem;            
+  margin-bottom: 0;
+  z-index: 10;
+}
+
+.top-links .nav-button {
+  display: inline-block;
+  font-size: 1.1rem;      
+  font-weight: bold;
+  padding: 0.4rem 0.8rem; 
+  border-radius: 6px;    
+  background: rgba(255,255,255,0.1); 
+  color: white;           
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.top-links .nav-button:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+.nav-button {
+  margin-left: .5rem;
+  transition: transform .2s ease;
+}
+.nav-button:hover {
+  transform: scale(1.2);
+}
+
+.nav-button,
+#toggleFiltersBtn,
+.page-nav .nav-button {
+  padding: 0.4rem 0.6rem;  
+  font-size: 0.9rem;
+}

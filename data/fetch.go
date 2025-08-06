@@ -105,6 +105,7 @@ func FetchFullArtistInfo() []models.FullArtistInfo {
 				Locations:     locations.Locations,
 				Dates:         dates.Dates,
 				Relation:      relation.DatesLocations,
+				YouTubeID:     models.YouTubeIDs[artist.ID],
 			}
 
 		}(artist)

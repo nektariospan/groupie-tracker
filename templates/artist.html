@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>{{.Name}}</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/artist.css">
+  <link rel="stylesheet" href="/static/css/error.css">
+  
   <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
 </head>
 <body>
@@ -13,6 +16,12 @@
       <img src="{{.Image}}" alt="{{.Name}}" class="artist-image">
       <h1 class="artist-title">{{.Name}}</h1>
     </div>
+
+    <!-- Creation Year -->
+    <section class="artist-info-section">
+      <h2>🎤 Year of Creation</h2>
+      <p>{{.CreationDate}}</p>
+    </section>
 
     <!-- First album -->
     <section class="artist-info-section">
@@ -66,6 +75,19 @@
         {{end}}
       </div>
     </section>
+
+     <!-- ► Media Section: YouTube -->
+    <section class="artist-media">
+      <h2>🎵 Official Video</h2>
+      <iframe
+        width="560" height="315"
+        src="https://www.youtube.com/embed/{{.YouTubeID}}"
+        title="Official Video for {{.Name}}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
 
     <!-- Back link -->
     <div class="back-link">

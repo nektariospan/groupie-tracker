@@ -3,26 +3,11 @@ package web
 import (
 	"groupie-tracker/data"
 	"groupie-tracker/models"
-	"html/template"
 	"log"
 	"net/http"
-	"runtime/debug"
 	"strconv"
 	"strings"
 )
-
-// Templates
-var templates = template.Must(template.ParseGlob("templates/*.html"))
-var errorTemplate = template.Must(template.ParseFiles("templates/errors/error.html"))
-
-// Cached data
-var allArtists []models.FullArtistInfo
-
-// Error data for rendering error.html
-type ErrorData struct {
-	Code    int
-	Message string
-}
 
 // StartServer sets up routes, applies middleware, and starts the HTTP server
 func StartServer() {
@@ -46,13 +31,17 @@ func StartServer() {
 
 // Team page
 func teamHandler(w http.ResponseWriter, _ *http.Request) {
-	if err := templates.ExecuteTemplate(w, "team.html", nil); err != nil {
-		renderErrorPage(w, http.StatusInternalServerError, "Team page template error")
-	}
+	safeExecuteTemplate(w, "team.html", nil)
 }
 
 // Render the homepage with pagination
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.URL.Path != "/" {
+		renderErrorPage(w, http.StatusNotFound, "Page not found")
+		return
+	}
+	
 	total := len(allArtists)
 
 	// Default values
@@ -112,9 +101,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		PreviousPage: page - 1,
 	}
 
-	if err := templates.ExecuteTemplate(w, "index.html", viewData); err != nil {
-		renderErrorPage(w, http.StatusInternalServerError, "Home page template error")
-	}
+	safeExecuteTemplate(w, "index.html", viewData)
 }
 
 // Render individual artist page
@@ -128,43 +115,10 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, artist := range allArtists {
 		if artist.ID == id {
-			if err := templates.ExecuteTemplate(w, "artist.html", artist); err != nil {
-				renderErrorPage(w, http.StatusInternalServerError, "Error rendering artist page")
-			}
+			safeExecuteTemplate(w, "artist.html", artist)
 			return
 		}
 	}
 
 	renderErrorPage(w, http.StatusNotFound, "Artist not found")
-}
-
-// Renders error.html with given code and message
-func renderErrorPage(w http.ResponseWriter, code int, message string) {
-	// First and only WriteHeader call
-	w.WriteHeader(code)
-
-	err := errorTemplate.Execute(w, ErrorData{Code: code, Message: message})
-	if err != nil {
-		// Don't call WriteHeader again!
-		log.Printf("Error rendering error page template: %v", err)
-
-		// If the socket hasn't already closed, write a fallback message
-		_, writeErr := w.Write([]byte("An unexpected error occurred."))
-		if writeErr != nil {
-			log.Printf("Client disconnected (broken pipe): %v", writeErr)
-		}
-	}
-}
-
-// RecoveryMiddleware recovers from panics and returns a 500 page
-func RecoveryMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() {
-			if err := recover(); err != nil {
-				log.Printf("🔥 Panic recovered: %v\n%s", err, debug.Stack())
-				renderErrorPage(w, http.StatusInternalServerError, "Internal Server Error")
-			}
-		}()
-		next.ServeHTTP(w, r)
-	})
 }

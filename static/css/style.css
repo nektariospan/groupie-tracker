@@ -1,0 +1,204 @@
+/*----------------------------------------
+  Pagination Controls
+----------------------------------------*/
+.pagination-controls {
+  text-align: right;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.limit-controls {
+  display: inline-block;
+  font-size: 1.2rem;
+}
+.limit-controls a {
+  margin: 0 0.3rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.limit-controls a:hover {
+  transform: scale(1.2);
+}
+.limit-controls a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.page-nav {
+  display: block;
+  margin-top: 0.5rem;
+}
+.page-nav .prev-button,
+.page-nav .next-button {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  font-weight: bold;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.1);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.page-nav .prev-button:hover,
+.page-nav .next-button:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+  text-decoration: none;
+}
+
+/*----------------------------------------
+  Artist Grid (up to 5 per row)
+----------------------------------------*/
+
+/* ── BASE GRID (desktop first) ── */
+.artist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-w), 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  justify-content: center;
+  align-items: start;
+  margin: 0 auto;
+}
+
+/* ── MOBILE ONLY: up to 680px ── */
+@media (max-width: 680px) {
+  .artist-grid {
+    grid-template-columns: 1fr;   
+    justify-items: center;        
+    gap: 3rem 0;                  
+    padding: 2rem 1rem;
+    margin: 0 auto;
+    max-width: 320px;             
+  }
+}
+
+/*  TABLET & SMALL DESKTOP (681px-1000px) */
+@media (min-width: 681px) and (max-width: 1000px) {
+  .artist-grid {
+    grid-template-columns: repeat(2, minmax(var(--card-w),1fr));
+    margin-left: 6rem;
+  }
+}
+
+/* ── LARGER DESKTOP RANGES ── */
+@media (min-width: 1001px) and (max-width: 1350px) {
+  .artist-grid {
+    grid-template-columns: repeat(3, minmax(var(--card-w), 1fr));
+    gap: 2rem;
+  }
+}
+@media (min-width: 1351px) and (max-width: 1700px) {
+  .artist-grid {
+    grid-template-columns: repeat(4, minmax(var(--card-w), 1fr));
+  }
+}
+@media (min-width: 1701px) {
+  .artist-grid {
+    grid-template-columns: repeat(5, minmax(var(--card-w), 1fr));
+  }
+}
+
+/*----------------------------------------
+  Artist Card & Flip Link
+----------------------------------------*/
+.artist-card {
+  width: 100%;
+  max-width: var(--card-w);
+  height: var(--card-h);
+  perspective: 1000px;
+  padding: 0.2rem;
+}
+
+.card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+}
+
+/* Flip on hover (only for devices that support hover) */
+@media (hover: hover) {
+  .artist-card:hover .card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+/*----------------------------------------
+  Front & Back face styling
+----------------------------------------*/
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.card-front {
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.card-back {
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--primary);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/*----------------------------------------
+  Avatar image inside cards
+----------------------------------------*/
+.card-front img {
+  width: var(--img-size);
+  height: var(--img-size);
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,0.1);
+}
+
+/*----------------------------------------
+  Artist name & info styling
+----------------------------------------*/
+.artist-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: .5rem 0;
+}
+.artist-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.artist-info p,
+.artist-info ul {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: .5rem 0;
+}
+.artist-info ul {
+  padding-left: 1.5rem;
+}

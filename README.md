@@ -31,25 +31,32 @@
 ## Project Structure
 
 ```
-groupie-tracker/
-├── data/                 # Contains fetch.go for API data fetching
-│   └── fetch.go
-├── models/               # Contains types.go with all data models (Artist, Location, etc.)
-│   └── types.go
-├── static/               # Static files (CSS, images, icons)
-│   ├── images/           # Artist images, team photos, favicon
-│   └── style.css         # Main stylesheet
-├── templates/            # HTML templates for pages and errors
-│   ├── errors/
-│   │   └── error.html
-│   ├── artist.html
+GROUPIE-TRACKER/
+├── data/
+│   ├── fetch.go       # Data fetching logic
+│   └── models/
+│       └── types.go   # Domain models
+├── static/
+│   ├── css/           # Stylesheets
+│   │   ├── artist.css
+│   │   ├── base.css
+│   │   ├── error.css
+│   │   ├── style.css
+│   │   └── team.css
+│   └── images/        # Static images
+├── templates/         # HTML templates
 │   ├── index.html
-│   └── team.html
-├── web/                  # HTTP server, handlers, and middleware logic
-│   └── server.go
-├── go.mod                # Go module definition
-├── main.go               # Entry point, delegates to web/server
-└── README.md             # Project documentation
+│   ├── team.html
+│   ├── artist.html
+│   └── errors/
+│       └── error.html
+├── web/               # Web layer
+│   ├── helpers.go     # Template rendering helpers
+│   ├── middleware.go  # HTTP middleware (recovery)
+│   └── server.go      # Routing and handlers
+├── go.mod             # Go module definition
+├── main.go            # Application entry point
+└── README.md          # Project documentation
 ```
 
 ## API Endpoints
