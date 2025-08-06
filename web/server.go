@@ -31,7 +31,11 @@ func StartServer() {
 
 // Team page
 func teamHandler(w http.ResponseWriter, _ *http.Request) {
-	safeExecuteTemplate(w, "team.html", nil)
+	err := templates.ExecuteTemplate(w, "team.html", nil)
+	if err != nil {
+		log.Printf("🔥 Template error: %v", err)
+		renderErrorPage(w, http.StatusInternalServerError, "team.html render error")
+	}
 }
 
 // Render the homepage with pagination
@@ -41,7 +45,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		renderErrorPage(w, http.StatusNotFound, "Page not found")
 		return
 	}
-	
+
 	total := len(allArtists)
 
 	// Default values
@@ -101,7 +105,11 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		PreviousPage: page - 1,
 	}
 
-	safeExecuteTemplate(w, "index.html", viewData)
+	err := templates.ExecuteTemplate(w, "index.html", viewData)
+	if err != nil {
+		log.Printf("🔥 Template error: %v", err)
+		renderErrorPage(w, http.StatusInternalServerError, "index.html render error")
+	}
 }
 
 // Render individual artist page
@@ -115,7 +123,11 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, artist := range allArtists {
 		if artist.ID == id {
-			safeExecuteTemplate(w, "artist.html", artist)
+			err := templates.ExecuteTemplate(w, "artist.html", artist)
+			if err != nil {
+				log.Printf("🔥 Template error: %v", err)
+				renderErrorPage(w, http.StatusInternalServerError, "artist.html render error")
+			}
 			return
 		}
 	}
